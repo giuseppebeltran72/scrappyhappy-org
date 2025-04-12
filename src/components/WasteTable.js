@@ -6,6 +6,12 @@ const WasteTable = ({ data, colors, selectedWasteTypes }) => {
         direction: 'ascending'
     });
 
+    // month order for proper chronological sorting
+    const monthOrder = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
     // handle sorting
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -17,6 +23,17 @@ const WasteTable = ({ data, colors, selectedWasteTypes }) => {
 
     // apply sorting to data
     const sortedData = [...data].sort((a, b) => {
+        // special handling for month sorting
+        if (sortConfig.key === 'month') {
+            const monthIndexA = monthOrder.indexOf(a.month);
+            const monthIndexB = monthOrder.indexOf(b.month);
+
+            return sortConfig.direction === 'ascending'
+                ? monthIndexA - monthIndexB
+                : monthIndexB - monthIndexA;
+        }
+
+        // normal sorting for other columns
         if (a[sortConfig.key] < b[sortConfig.key]) {
             return sortConfig.direction === 'ascending' ? -1 : 1;
         }
